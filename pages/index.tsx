@@ -21,7 +21,6 @@ https://www.flickr.com/photos/138302041@N06/
 nusbio2
 https://console.cloudinary.com/app/c-f365f09c777553e8ebf1ea4f54d6f7/assets/media_library/folders/cd8301c579893e3a49bd9528788fc09474?view_mode=mosaic
 
-
 */
 
 const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
@@ -102,10 +101,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
                 src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/c_scale,w_720/${public_id}.${format}`}
                 width={720}
                 height={480}
-                sizes="(max-width: 640px) 100vw,
-                  (max-width: 1280px) 50vw,
-                  (max-width: 1536px) 33vw,
-                  25vw"
+                sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, (max-width: 1536px) 33vw, 25vw"
               />
             </Link>
           ))}
@@ -124,15 +120,16 @@ export async function getStaticProps() {
 
   console.log(`*** getStaticProps **********************************`);
   console.log(`process.env.CLOUDINARY_FOLDER ${process.env.CLOUDINARY_FOLDER}`);
-  console.log(`*************************************`);
 
   const results = await cloudinary.v2.search
     .expression(`folder:${process.env.CLOUDINARY_FOLDER}/*`)
     .sort_by("public_id", "desc")
     .max_results(400)
     .execute();
-  let reducedResults: ImageProps[] = [];
 
+  console.log(`results ${results.resources.length}`);
+
+  let reducedResults: ImageProps[] = [];
   let i = 0;
   for (let result of results.resources) {
     reducedResults.push({
@@ -145,9 +142,13 @@ export async function getStaticProps() {
     i++;
   }
 
+  console.log(`reducedResults ${reducedResults.length}`);
+  console.log(`*************************************`);
+
   const blurImagePromises = results.resources.map((image: ImageProps) => {
     return getBase64ImageUrl(image);
   });
+
   const imagesWithBlurDataUrls = await Promise.all(blurImagePromises);
 
   for (let i = 0; i < reducedResults.length; i++) {
