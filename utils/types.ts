@@ -6,6 +6,8 @@ export interface ImageProps {
   public_id: string;
   format: string;
   blurDataUrl?: string;
+  parentFolder?: string;
+  aspect_ratio?: number;
 }
 
 export interface SharedModalProps {

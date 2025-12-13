@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Bridge from "../components/Icons/Bridge";
 import Logo from "../components/Icons/Logo";
 import Modal from "../components/Modal";
@@ -23,14 +23,46 @@ https://console.cloudinary.com/app/c-f365f09c777553e8ebf1ea4f54d6f7/assets/media
 
 */
 
-const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
+const PAGE_TITLE = "Nusbio 1 - Frederic Torres";
 
-  console.log(`images ${images.length}`);
+function getUrl(public_id: string, format: string) {
+
+  const url = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/c_scale,w_720/${public_id}.${format}`;
+  //console.log(`getUrl ${public_id} ${format}, url ${url}`);
+  return url;
+}
+
+const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
 
   const router = useRouter();
   const { photoId } = router.query;
   const [lastViewedPhoto, setLastViewedPhoto] = useLastViewedPhoto();
   const lastViewedPhotoRef = useRef<HTMLAnchorElement>(null);
+  const [nusbio1, setNusbio1] = useState(true);
+  const [nusbio2, setNusbio2] = useState(false);
+  const [analog, setAnalog] = useState(false);
+
+  if (photoId) {
+    console.log(`photoId ${photoId} DETECTED`);
+  }
+  else {
+    if (!nusbio1 && !nusbio2 && !analog) {
+      images = [];
+    }
+    else if (nusbio1 && nusbio2 && analog) {
+      images = images;
+    }
+    else {
+      const images2 = images;
+      images = [];
+      if (nusbio1)
+        images.push(...images2.filter((image) => image.parentFolder.includes("nusbio1")));
+      if (nusbio2)
+        images.push(...images2.filter((image) => image.parentFolder.includes("nusbio2")));
+      if (analog)
+        images.push(...images2.filter((image) => image.parentFolder.includes("analog")));
+    }
+  }
 
   useEffect(() => {
     // This effect keeps track of the last viewed photo in the modal to keep the index page in sync when the user navigates back
@@ -43,35 +75,21 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
   return (
     <>
       <Head>
-        <title>Next.js Conf 2022 Photos</title>
-        <meta
-          property="og:image"
-          content="https://nextjsconf-pics.vercel.app/og-image.png"
-        />
-        <meta
-          name="twitter:image"
-          content="https://nextjsconf-pics.vercel.app/og-image.png"
-        />
+        <title> {PAGE_TITLE}</title>
+        <meta property="og:image" content="https://nextjsconf-pics.vercel.app/og-image.png" />
       </Head>
       <main className="mx-auto max-w-[1960px] p-4">
         {photoId && (
-          <Modal
-            images={images}
-            onClose={() => {
-              setLastViewedPhoto(photoId);
-            }}
-          />
+          <Modal images={images} onClose={() => { setLastViewedPhoto(photoId); }} />
         )}
         <div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">
           <div className="after:content relative mb-1 flex flex-col  gap-4 overflow-hidden rounded-lg bg-white/10 px-6 pb-16 pt-64 text-white shadow-highlight after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight lg:pt-0">
             <h1 className="mt-2 mb-1 text-base font-bold tracking-widest">
-              Nusbio /2 - 2025
+              {PAGE_TITLE}
             </h1>
             <div className="">
               Nusbio /2 + FT232H.NET Library. <br /><br />
-
               The .NET/Windows library FT232H.NET provides an abstraction to program
-
               <ul>
                 <li>- The SPI protocol</li>
                 <li>- The I2C protocol</li>
@@ -80,25 +98,50 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
               for the FTDI chip FT232H using the (
               <a href="https://www.adafruit.com/product/2264">Adafruit Breakout FT232H</a>
               ) or any other compatible breakout.
+            </div>
 
+            <div className="flex flex-col gap-2 mt-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={nusbio1}
+                  onChange={(e) => setNusbio1(e.target.checked)}
+                  className="rounded text-pink-500 focus:ring-0"
+                />
+                <span>Nusbio1</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={nusbio2}
+                  onChange={(e) => setNusbio2(e.target.checked)}
+                  className="rounded text-pink-500 focus:ring-0"
+                />
+                <span>Nusbio2</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={analog}
+                  onChange={(e) => setAnalog(e.target.checked)}
+                  className="rounded text-pink-500 focus:ring-0"
+                />
+                <span>Analog</span>
+              </label>
             </div>
           </div>
           {images.map(({ id, public_id, format, blurDataUrl }) => (
-            <Link
-              key={id}
-              href={`/?photoId=${id}`}
-              as={`/p/${id}`}
+            <Link key={id} href={`/?photoId=${id}`} as={`/p/${id}`}
               ref={id === Number(lastViewedPhoto) ? lastViewedPhotoRef : null}
               shallow
               className="after:content group relative mb-5 block w-full cursor-zoom-in after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight"
             >
-              <Image
-                alt="Next.js Conf photo"
+              <Image alt=""
                 className="transform rounded-lg brightness-90 transition will-change-auto group-hover:brightness-110"
                 style={{ transform: "translate3d(0, 0, 0)" }}
                 placeholder="blur"
                 blurDataURL={blurDataUrl}
-                src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/c_scale,w_720/${public_id}.${format}`}
+                src={getUrl(public_id, format)}
                 width={720}
                 height={480}
                 sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, (max-width: 1536px) 33vw, 25vw"
@@ -108,7 +151,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
         </div>
       </main>
       <footer className="p-6 text-center text-white/80 sm:p-12">
-        Thank you to Fred
+        Thank you to footer
       </footer>
     </>
   );
@@ -116,10 +159,21 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
 
 export default Home;
 
+let __counter = 0;
+let __reducedResults: ImageProps[] = [];
+
 export async function getStaticProps() {
 
-  console.log(`*** getStaticProps **********************************`);
-  console.log(`process.env.CLOUDINARY_FOLDER ${process.env.CLOUDINARY_FOLDER}`);
+  if (__reducedResults.length > 0) {
+    console.log(`\r\n*** getStaticProps **** OPTIMIZED **** `);
+    return { props: { images: __reducedResults } };
+  }
+
+  console.log(`\r\n*** getStaticProps ********************************** `);
+  console.log(`Machine Name: ${require("os").hostname()}`);
+  __counter++;
+  console.log(`__counter ${__counter}`);
+  console.log(`process.env.CLOUDINARY_FOLDER ${process.env.CLOUDINARY_FOLDER} `);
 
   const results = await cloudinary.v2.search
     .expression(`folder:${process.env.CLOUDINARY_FOLDER}/*`)
@@ -132,18 +186,12 @@ export async function getStaticProps() {
   let reducedResults: ImageProps[] = [];
   let i = 0;
   for (let result of results.resources) {
-    reducedResults.push({
-      id: i,
-      height: result.height,
-      width: result.width,
-      public_id: result.public_id,
-      format: result.format,
-    });
+    //console.log(`result ${result.public_id} ${JSON.stringify(result)}`);
+    reducedResults.push({ id: i, height: result.height, width: result.width, public_id: result.public_id, format: result.format, parentFolder: result.asset_folder, aspect_ratio: result.aspect_ratio });
     i++;
   }
 
   console.log(`reducedResults ${reducedResults.length}`);
-  console.log(`*************************************`);
 
   const blurImagePromises = results.resources.map((image: ImageProps) => {
     return getBase64ImageUrl(image);
@@ -155,9 +203,10 @@ export async function getStaticProps() {
     reducedResults[i].blurDataUrl = imagesWithBlurDataUrls[i];
   }
 
-  return {
-    props: {
-      images: reducedResults,
-    },
-  };
+  console.log(`*************************************`);
+
+  __reducedResults = reducedResults;
+
+  return { props: { images: reducedResults } };
 }
+

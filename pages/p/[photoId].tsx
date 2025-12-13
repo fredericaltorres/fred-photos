@@ -34,8 +34,8 @@ const Home: NextPage = ({ currentPhoto }: { currentPhoto: ImageProps }) => {
 export default Home;
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const results = await getResults();
 
+  const results = await getResults();
   let reducedResults: ImageProps[] = [];
   let i = 0;
   for (let result of results.resources) {

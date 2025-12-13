@@ -5,17 +5,11 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <link rel="icon" href="/favicon.ico" />
-          <meta
-            name="description"
-            content="Frederic Torres's pictures"
-          />
-          <meta property="og:site_name" content="nextjsconf-pics.vercel.app" />
-          <meta
-            property="og:description"
-            content="Frederic Torres's pictures"
-          />
-          <meta property="og:title" content="Frederic Torres's pictures" />
+          {/* <link rel="icon" href="/favicon.ico" />
+          <meta name="description" content="Frederic Torres's pictures" />
+          <meta property="og:site_name" content="" />
+          <meta property="og:description" content="Frederic Torres's pictures" />
+          <meta property="og:title" content="Frederic Torres's pictures" /> */}
         </Head>
         <body className="bg-black antialiased">
           <Main />
