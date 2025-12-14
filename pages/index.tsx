@@ -16,14 +16,20 @@ import { useLastViewedPhoto } from "../utils/useLastViewedPhoto";
 
 https://vercel.com/blog/building-a-fast-animated-image-gallery-with-next-js
 https://cloudinary.com/documentation/transformation_reference
+https://cloudinary.com/documentation/image_upload_api_reference
+https://cloudinary.com/documentation/search_method
 https://www.flickr.com/photos/138302041@N06/
 
 nusbio2
 https://console.cloudinary.com/app/c-f365f09c777553e8ebf1ea4f54d6f7/assets/media_library/folders/cd8301c579893e3a49bd9528788fc09474?view_mode=mosaic
 
+https://res.cloudinary.com/dlcbrqzbv/image/upload/c_scale,w_720/8x8_LED_Matrix_Consumption_glxrli.jpg
+https://res.cloudinary.com/dlcbrqzbv/image/upload/c_scale,w_1440/8x8_LED_Matrix_Consumption_glxrli.jpg
+https://res.cloudinary.com/dlcbrqzbv/image/upload/c_scale,w_2560/8x8_LED_Matrix_Consumption_glxrli.jpg
+
 */
 
-const PAGE_TITLE = "Nusbio 1 - Frederic Torres";
+const PAGE_TITLE = "Hardware projects photos by Frederic Torres";
 
 function getUrl(public_id: string, format: string) {
 
@@ -32,37 +38,79 @@ function getUrl(public_id: string, format: string) {
   return url;
 }
 
-const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
+const nusbio1Markdown = `
+# Nusbio /1 
+The is UDB communication interface  for Windows/.NET/C# based on the FT232R chip providing an abstraction to program
+* The SPI protocol
+* The I2C protocol
+* The GPIOs
+* 
+`;
 
+const nusbio2Markdown = `
+# Nusbio /2 + FT232H.NET Library.
+The .NET/Windows library FT232H.NET provides an abstraction to program
+* The SPI protocol
+* The I2C protocol
+* The GPIOs
+for the FTDI chip FT232H using the [Adafruit Breakout FT232H](https://www.adafruit.com/product/2264) or any other compatible breakout.
+`;
+
+const nusbio1LcdMarkdown = `
+# Nusbio /1 + LCD 24x4
+ Nusbio /1 + LCD is USB device for Windows/.NET/C# based on the FT232R chip to control a LCD 24x4.
+`;
+
+const analogMarkdown = `
+# Analog
+Different Analog projects, based on the 1970 technology.
+`;
+
+const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: number }) => {
+
+  console.log(`counter ${counter}`);
   const router = useRouter();
   const { photoId } = router.query;
   const [lastViewedPhoto, setLastViewedPhoto] = useLastViewedPhoto();
   const lastViewedPhotoRef = useRef<HTMLAnchorElement>(null);
   const [nusbio1, setNusbio1] = useState(true);
   const [nusbio2, setNusbio2] = useState(false);
+  const [nusbio1Lcd, setNusbio1Lcd] = useState(false);
   const [analog, setAnalog] = useState(false);
+  const markdownsInfo = [];
 
   if (photoId) {
     console.log(`photoId ${photoId} DETECTED`);
   }
   else {
-    if (!nusbio1 && !nusbio2 && !analog) {
+    if (!nusbio1 && !nusbio2 && !analog && !nusbio1Lcd) {
       images = [];
     }
-    else if (nusbio1 && nusbio2 && analog) {
+    else if (nusbio1 && nusbio2 && analog && nusbio1Lcd) {
       images = images;
     }
     else {
       const images2 = images;
       images = [];
-      if (nusbio1)
-        images.push(...images2.filter((image) => image.parentFolder.includes("nusbio1")));
-      if (nusbio2)
-        images.push(...images2.filter((image) => image.parentFolder.includes("nusbio2")));
-      if (analog)
-        images.push(...images2.filter((image) => image.parentFolder.includes("analog")));
+      if (nusbio1) {
+        images.push(...images2.filter((image) => image.parentFolder.includes("/nusbio1")));
+        markdownsInfo.push(nusbio1Markdown);
+      }
+      if (nusbio2) {
+        images.push(...images2.filter((image) => image.parentFolder.includes("/nusbio2")));
+        markdownsInfo.push(nusbio2Markdown);
+      }
+      if (nusbio1Lcd) {
+        images.push(...images2.filter((image) => image.parentFolder.includes("/nusbio_lcd")));
+        markdownsInfo.push(nusbio1LcdMarkdown);
+      }
+      if (analog) {
+        images.push(...images2.filter((image) => image.parentFolder.includes("/analog")));
+        markdownsInfo.push(analogMarkdown);
+      }
     }
   }
+  console.log(`images ${images.length}, nusbio1Lcd ${nusbio1Lcd}`);
 
   useEffect(() => {
     // This effect keeps track of the last viewed photo in the modal to keep the index page in sync when the user navigates back
@@ -87,54 +135,42 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
             <h1 className="mt-2 mb-1 text-base font-bold tracking-widest">
               {PAGE_TITLE}
             </h1>
-            <div className="">
-              Nusbio /2 + FT232H.NET Library. <br /><br />
-              The .NET/Windows library FT232H.NET provides an abstraction to program
-              <ul>
-                <li>- The SPI protocol</li>
-                <li>- The I2C protocol</li>
-                <li>- The GPIOs</li>
-              </ul>
-              for the FTDI chip FT232H using the (
-              <a href="https://www.adafruit.com/product/2264">Adafruit Breakout FT232H</a>
-              ) or any other compatible breakout.
-            </div>
+
 
             <div className="flex flex-col gap-2 mt-4">
               <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={nusbio1}
-                  onChange={(e) => setNusbio1(e.target.checked)}
-                  className="rounded text-pink-500 focus:ring-0"
-                />
-                <span>Nusbio1</span>
+                <input type="checkbox" checked={nusbio1} onChange={(e) => setNusbio1(e.target.checked)} className="rounded text-pink-500 focus:ring-0" />
+                <span>Nusbio1 USB Device</span>
               </label>
               <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={nusbio2}
-                  onChange={(e) => setNusbio2(e.target.checked)}
-                  className="rounded text-pink-500 focus:ring-0"
-                />
-                <span>Nusbio2</span>
+                <input type="checkbox" checked={nusbio2} onChange={(e) => setNusbio2(e.target.checked)} className="rounded text-pink-500 focus:ring-0" />
+                <span>Nusbio2 USB Device</span>
               </label>
               <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={analog}
-                  onChange={(e) => setAnalog(e.target.checked)}
-                  className="rounded text-pink-500 focus:ring-0"
-                />
-                <span>Analog</span>
+                <input type="checkbox" checked={nusbio1Lcd} onChange={(e) => { setNusbio1Lcd(e.target.checked); }} className="rounded text-pink-500 focus:ring-0" />
+                <span>Nusbio1 LCD</span>
               </label>
+              <label className="flex items-center gap-2">
+                <input type="checkbox" checked={analog} onChange={(e) => setAnalog(e.target.checked)} className="rounded text-pink-500 focus:ring-0" />
+                <span>Analog PCBs</span>
+              </label>
+
+
+              <div className="">
+                {markdownsInfo.map((markdown, index) => (
+                  <div key={index} className="mt-4">
+                    <Markdown content={markdown} />
+                  </div>
+                ))}
+              </div>
+
             </div>
           </div>
           {images.map(({ id, public_id, format, blurDataUrl }) => (
             <Link key={id} href={`/?photoId=${id}`} as={`/p/${id}`}
+              onClick={() => { console.log(`onClick ${JSON.stringify(images[id])}`); }}
               ref={id === Number(lastViewedPhoto) ? lastViewedPhotoRef : null}
-              shallow
-              className="after:content group relative mb-5 block w-full cursor-zoom-in after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight"
+              shallow className="after:content group relative mb-5 block w-full cursor-zoom-in after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight"
             >
               <Image alt=""
                 className="transform rounded-lg brightness-90 transition will-change-auto group-hover:brightness-110"
@@ -151,7 +187,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
         </div>
       </main>
       <footer className="p-6 text-center text-white/80 sm:p-12">
-        Thank you to footer
+        Hardware photos by Frederic Torres
       </footer>
     </>
   );
@@ -186,6 +222,7 @@ export async function getStaticProps() {
   let reducedResults: ImageProps[] = [];
   let i = 0;
   for (let result of results.resources) {
+
     //console.log(`result ${result.public_id} ${JSON.stringify(result)}`);
     reducedResults.push({ id: i, height: result.height, width: result.width, public_id: result.public_id, format: result.format, parentFolder: result.asset_folder, aspect_ratio: result.aspect_ratio });
     i++;
@@ -207,6 +244,6 @@ export async function getStaticProps() {
 
   __reducedResults = reducedResults;
 
-  return { props: { images: reducedResults } };
+  return { props: { images: reducedResults, counter: 1234 }, revalidate: 5 * 60 };
 }
 

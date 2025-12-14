@@ -14,6 +14,8 @@ export default function Modal({ images, onClose }: { images: ImageProps[]; onClo
   const { photoId } = router.query;
   let index = Number(photoId);
 
+  console.log(`Modal photoId:${photoId} index:${index}`);
+
   const [direction, setDirection] = useState(0);
   const [curIndex, setCurIndex] = useState(index);
 
@@ -51,25 +53,13 @@ export default function Modal({ images, onClose }: { images: ImageProps[]; onClo
   });
 
   return (
-    <Dialog
-      static
-      open={true}
-      onClose={handleClose}
-      initialFocus={overlayRef}
-      className="fixed inset-0 z-10 flex items-center justify-center"
-    >
-      <Dialog.Overlay
-        ref={overlayRef}
-        as={motion.div}
-        key="backdrop"
+    <Dialog static open={true} onClose={handleClose} initialFocus={overlayRef} className="fixed inset-0 z-10 flex items-center justify-center">
+      <Dialog.Overlay ref={overlayRef} as={motion.div} key="backdrop"
         className="fixed inset-0 z-30 bg-black/70 backdrop-blur-2xl"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       />
-      <SharedModal
-        index={curIndex}
-        direction={direction}
-        images={images}
+      <SharedModal index={curIndex} direction={direction} images={images}
         changePhotoId={changePhotoId}
         closeModal={handleClose}
         navigation={true}
