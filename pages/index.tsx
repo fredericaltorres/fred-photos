@@ -11,6 +11,10 @@ import cloudinary from "../utils/cloudinary";
 import getBase64ImageUrl from "../utils/generateBlurPlaceholder";
 import type { ImageProps } from "../utils/types";
 import { useLastViewedPhoto } from "../utils/useLastViewedPhoto";
+import Markdown from "react-markdown";
+
+
+const MarkDownClassName = "prose max-w-none prose-p:text-sm prose-p:leading-relaxed prose-p:font-normal  prose-p:text-white prose-ul:text-white prose-ol:text-white  prose-h1:text-white prose-h2:text-white prose-h3:text-white prose-h4:text-white prose-h5:text-white prose-h6:text-white prose-p:mt-2 prose-p:mb-2 prose-p:ml-2 prose-p:mr-2 ";
 
 /*
 
@@ -39,16 +43,15 @@ function getUrl(public_id: string, format: string) {
 }
 
 const nusbio1Markdown = `
-# Nusbio /1 
+### Nusbio /1 
 The is UDB communication interface  for Windows/.NET/C# based on the FT232R chip providing an abstraction to program
 * The SPI protocol
 * The I2C protocol
 * The GPIOs
-* 
 `;
 
 const nusbio2Markdown = `
-# Nusbio /2 + FT232H.NET Library.
+### Nusbio /2 + FT232H.NET Library.
 The .NET/Windows library FT232H.NET provides an abstraction to program
 * The SPI protocol
 * The I2C protocol
@@ -57,12 +60,12 @@ for the FTDI chip FT232H using the [Adafruit Breakout FT232H](https://www.adafru
 `;
 
 const nusbio1LcdMarkdown = `
-# Nusbio /1 + LCD 24x4
+### Nusbio /1 + LCD 24x4
  Nusbio /1 + LCD is USB device for Windows/.NET/C# based on the FT232R chip to control a LCD 24x4.
 `;
 
 const analogMarkdown = `
-# Analog
+### Analog
 Different Analog projects, based on the 1970 technology.
 `;
 
@@ -77,7 +80,7 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
   const [nusbio2, setNusbio2] = useState(false);
   const [nusbio1Lcd, setNusbio1Lcd] = useState(false);
   const [analog, setAnalog] = useState(false);
-  const markdownsInfo = [];
+  const markdownInfos = [];
 
   if (photoId) {
     console.log(`photoId ${photoId} DETECTED`);
@@ -94,19 +97,19 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
       images = [];
       if (nusbio1) {
         images.push(...images2.filter((image) => image.parentFolder.includes("/nusbio1")));
-        markdownsInfo.push(nusbio1Markdown);
+        markdownInfos.push(nusbio1Markdown);
       }
       if (nusbio2) {
         images.push(...images2.filter((image) => image.parentFolder.includes("/nusbio2")));
-        markdownsInfo.push(nusbio2Markdown);
+        markdownInfos.push(nusbio2Markdown);
       }
       if (nusbio1Lcd) {
         images.push(...images2.filter((image) => image.parentFolder.includes("/nusbio_lcd")));
-        markdownsInfo.push(nusbio1LcdMarkdown);
+        markdownInfos.push(nusbio1LcdMarkdown);
       }
       if (analog) {
         images.push(...images2.filter((image) => image.parentFolder.includes("/analog")));
-        markdownsInfo.push(analogMarkdown);
+        markdownInfos.push(analogMarkdown);
       }
     }
   }
@@ -132,35 +135,21 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
         )}
         <div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">
           <div className="after:content relative mb-1 flex flex-col  gap-4 overflow-hidden rounded-lg bg-white/10 px-6 pb-16 pt-64 text-white shadow-highlight after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight lg:pt-0">
+
             <h1 className="mt-2 mb-1 text-base font-bold tracking-widest">
               {PAGE_TITLE}
             </h1>
 
-
             <div className="flex flex-col gap-2 mt-4">
-              <label className="flex items-center gap-2">
-                <input type="checkbox" checked={nusbio1} onChange={(e) => setNusbio1(e.target.checked)} className="rounded text-pink-500 focus:ring-0" />
-                <span>Nusbio1 USB Device</span>
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="checkbox" checked={nusbio2} onChange={(e) => setNusbio2(e.target.checked)} className="rounded text-pink-500 focus:ring-0" />
-                <span>Nusbio2 USB Device</span>
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="checkbox" checked={nusbio1Lcd} onChange={(e) => { setNusbio1Lcd(e.target.checked); }} className="rounded text-pink-500 focus:ring-0" />
-                <span>Nusbio1 LCD</span>
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="checkbox" checked={analog} onChange={(e) => setAnalog(e.target.checked)} className="rounded text-pink-500 focus:ring-0" />
-                <span>Analog PCBs</span>
-              </label>
 
+              <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio1} onChange={(e) => setNusbio1(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /> <span>Nusbio1 USB Device</span></label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio2} onChange={(e) => setNusbio2(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Nusbio2 USB Device</span></label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio1Lcd} onChange={(e) => { setNusbio1Lcd(e.target.checked); }} className="rounded text-pink-500 focus:ring-0" /><span>Nusbio1 LCD</span></label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={analog} onChange={(e) => setAnalog(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Analog PCBs</span></label>
 
-              <div className="">
-                {markdownsInfo.map((markdown, index) => (
-                  <div key={index} className="mt-4">
-                    <Markdown content={markdown} />
-                  </div>
+              <div className={MarkDownClassName}>
+                {markdownInfos.map((markdown, index) => (
+                  <Markdown key={index} >{markdown}</Markdown>
                 ))}
               </div>
 
