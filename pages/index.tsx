@@ -32,7 +32,8 @@ const MarkDownClassName = "prose max-w-none prose-p:text-sm prose-p:leading-rela
 
 const PAGE_TITLE = "Hardware projects by Frederic Torres";
 
-const getUrl = (public_id: string, format: string) => `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/c_scale,w_720/${public_id}.${format}`;
+const getUrl = (public_id: string, format: string) =>
+  `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/c_scale,w_720/${public_id}.${format}`;
 
 const nusbio1Markdown = `
 ### Nusbio /1 
@@ -155,15 +156,12 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
               <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio1Lcd} onChange={(e) => { setNusbio1Lcd(e.target.checked); }} className="rounded text-pink-500 focus:ring-0" /><span>Nusbio1 LCD</span></label>
               <label className="flex items-center gap-2"><input type="checkbox" checked={analog} onChange={(e) => setAnalog(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Analog PCBs</span></label>
               <label className="flex items-center gap-2"><input type="checkbox" checked={arduino} onChange={(e) => setArduino(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Arduino and MCUs</span></label>
-
               <br />
-
               <div className={MarkDownClassName}>
                 {markdownInfos.map((markdown, index) => (
                   <Markdown key={index} >{markdown}</Markdown>
                 ))}
               </div>
-
             </div>
           </div>
 
@@ -176,11 +174,9 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
               <Image alt=""
                 className="transform rounded-lg brightness-90 transition will-change-auto group-hover:brightness-110"
                 style={{ transform: "translate3d(0, 0, 0)" }}
-                placeholder="blur"
-                blurDataURL={blurDataUrl}
+                placeholder="blur" blurDataURL={blurDataUrl}
                 src={getUrl(public_id, format)}
-                width={720}
-                height={480}
+                width={720} height={480}
                 sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, (max-width: 1536px) 33vw, 25vw"
               />
             </Link>
@@ -244,17 +240,15 @@ export async function getStaticProps() {
   // }
 
   // only blur the first image
-  let blurImagePromises = results.resources.map((image: ImageProps) => {
-    return getBase64ImageUrl(image);
-  });
+  let blurImagePromises = results.resources.map((image: ImageProps) => { return getBase64ImageUrl(image); });
   blurImagePromises = blurImagePromises.splice(0, 1);
   const imagesWithBlurDataUrls = await Promise.all(blurImagePromises);
   for (let i = 0; i < reducedResults.length; i++) {
+
     reducedResults[i].blurDataUrl = imagesWithBlurDataUrls[0];
   }
 
   console.log(`[index.tsx]getStaticProps() END`);
-
 
   return { props: { images: reducedResults, counter: 1234 }, revalidate: 5 * 60 };
 }

@@ -19,10 +19,7 @@ import Twitter from "./Icons/Twitter";
 export default function SharedModal({ index, images, changePhotoId, closeModal, navigation, currentPhoto, direction }: SharedModalProps) {
 
   const [loaded, setLoaded] = useState(false);
-
-  let filteredImages = images?.filter((img: ImageProps) =>
-    range(index - 15, index + 15).includes(img.id),
-  );
+  let filteredImages = images?.filter((img: ImageProps) => range(index - 15, index + 15).includes(img.id));
 
   const handlers = useSwipeable({
     onSwipedLeft: () => {
@@ -72,10 +69,8 @@ export default function SharedModal({ index, images, changePhotoId, closeModal, 
               {navigation && (
                 <>
                   {index > 0 && (
-                    <button
-                      className="absolute left-3 top-[calc(50%-16px)] rounded-full bg-black/50 p-3 text-white/75 backdrop-blur-lg transition hover:bg-black/75 hover:text-white focus:outline-none"
-                      style={{ transform: "translate3d(0, 0, 0)" }}
-                      onClick={() => changePhotoId(index - 1)}
+                    <button className="absolute left-3 top-[calc(50%-16px)] rounded-full bg-black/50 p-3 text-white/75 backdrop-blur-lg transition hover:bg-black/75 hover:text-white focus:outline-none"
+                      style={{ transform: "translate3d(0, 0, 0)" }} onClick={() => changePhotoId(index - 1)}
                     >
                       <ChevronLeftIcon className="h-6 w-6" />
                     </button>
