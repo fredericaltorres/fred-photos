@@ -197,23 +197,14 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
 export default Home;
 
 let __counter = 0;
-let __reducedResults: ImageProps[] = [];
 
 export async function getStaticProps() {
 
-  if (__reducedResults.length > 0) {
-    console.log(`\r\n*** [index.tsx]getStaticProps **** OPTIMIZED **** `);
-    return { props: { images: __reducedResults } };
-  }
-
-  console.log(`\r\n*** [index.tsx]getStaticProps ********************************** `);
-  console.log(`Machine Name: ${require("os").hostname()}`);
+  console.log(`[index.tsx]getStaticProps() START`);
+  console.log(`[index.tsx]Machine Name: ${require("os").hostname()}`);
   __counter++;
-  console.log(`__counter ${__counter}`);
-  console.log(`process.env.CLOUDINARY_FOLDER ${process.env.CLOUDINARY_FOLDER} `);
-  // console.log(`process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME} `);
-  // console.log(`process.env.CLOUDINARY_API_KEY ${process.env.CLOUDINARY_API_KEY} `);
-  // console.log(`process.env.CLOUDINARY_API_SECRET ${process.env.CLOUDINARY_API_SECRET} `);
+  console.log(`[index.tsx]__counter ${__counter}`);
+  console.log(`[index.tsx]process.env.CLOUDINARY_FOLDER ${process.env.CLOUDINARY_FOLDER} `);
 
   const results = await cloudinary.v2.search
     .expression(`folder:${process.env.CLOUDINARY_FOLDER}/*`)
@@ -225,12 +216,11 @@ export async function getStaticProps() {
     console.error(`No results found for folder ${process.env.CLOUDINARY_FOLDER}`);
   }
 
-  console.log(`results ${results.resources.length}`);
+  console.log(`[index.tsx]getStaticProps() results ${results.resources.length}`);
 
   let reducedResults: ImageProps[] = [];
   let i = 0;
   for (let result of results.resources) {
-    console.log(`[index.tsx]getStaticProps i ${i}`);
     try {
       if (result.height) { // bad image
         reducedResults.push({ id: i, height: result.height, width: result.width, public_id: result.public_id, format: result.format, parentFolder: result.asset_folder, aspect_ratio: result.aspect_ratio });
@@ -243,7 +233,7 @@ export async function getStaticProps() {
     i++;
   }
 
-  console.log(`[index.tsx]getStaticProps.reducedResults ${reducedResults.length}`);
+  console.log(`[index.tsx]getStaticProps() reducedResults ${reducedResults.length}`);
 
   // const blurImagePromises = results.resources.map((image: ImageProps) => {
   //   return getBase64ImageUrl(image);
@@ -260,13 +250,11 @@ export async function getStaticProps() {
   blurImagePromises = blurImagePromises.splice(0, 1);
   const imagesWithBlurDataUrls = await Promise.all(blurImagePromises);
   for (let i = 0; i < reducedResults.length; i++) {
-    console.log(`[index.tsx]getStaticProps i ${i}`);
     reducedResults[i].blurDataUrl = imagesWithBlurDataUrls[0];
   }
 
-  console.log(`*************************************`);
+  console.log(`[index.tsx]getStaticProps() END`);
 
-  __reducedResults = reducedResults;
 
   return { props: { images: reducedResults, counter: 1234 }, revalidate: 5 * 60 };
 }
