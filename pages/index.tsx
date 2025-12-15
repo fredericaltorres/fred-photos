@@ -12,39 +12,30 @@ import getBase64ImageUrl from "../utils/generateBlurPlaceholder";
 import type { ImageProps } from "../utils/types";
 import { useLastViewedPhoto } from "../utils/useLastViewedPhoto";
 import Markdown from "react-markdown";
-
-
 const MarkDownClassName = "prose max-w-none prose-p:text-sm prose-p:leading-relaxed prose-p:font-normal  prose-p:text-white prose-ul:text-white prose-ol:text-white  prose-h1:text-white prose-h2:text-white prose-h3:text-white prose-h4:text-white prose-h5:text-white prose-h6:text-white prose-p:mt-2 prose-p:mb-2 prose-p:ml-2 prose-p:mr-2 ";
 
 /*
 
-https://vercel.com/blog/building-a-fast-animated-image-gallery-with-next-js
-https://cloudinary.com/documentation/transformation_reference
-https://cloudinary.com/documentation/image_upload_api_reference
-https://cloudinary.com/documentation/search_method
-https://www.flickr.com/photos/138302041@N06/
-
-nusbio2
-https://console.cloudinary.com/app/c-f365f09c777553e8ebf1ea4f54d6f7/assets/media_library/folders/cd8301c579893e3a49bd9528788fc09474?view_mode=mosaic
-
-https://res.cloudinary.com/dlcbrqzbv/image/upload/c_scale,w_720/8x8_LED_Matrix_Consumption_glxrli.jpg
-https://res.cloudinary.com/dlcbrqzbv/image/upload/c_scale,w_1440/8x8_LED_Matrix_Consumption_glxrli.jpg
-https://res.cloudinary.com/dlcbrqzbv/image/upload/c_scale,w_2560/8x8_LED_Matrix_Consumption_glxrli.jpg
+  https://vercel.com/blog/building-a-fast-animated-image-gallery-with-next-js
+  https://cloudinary.com/documentation/transformation_reference
+  https://cloudinary.com/documentation/image_upload_api_reference
+  https://cloudinary.com/documentation/search_method
+  https://www.flickr.com/photos/138302041@N06/
+  nusbio2
+  https://console.cloudinary.com/app/c-f365f09c777553e8ebf1ea4f54d6f7/assets/media_library/folders/cd8301c579893e3a49bd9528788fc09474?view_mode=mosaic
+  https://res.cloudinary.com/dlcbrqzbv/image/upload/c_scale,w_720/8x8_LED_Matrix_Consumption_glxrli.jpg
+  https://res.cloudinary.com/dlcbrqzbv/image/upload/c_scale,w_1440/8x8_LED_Matrix_Consumption_glxrli.jpg
+  https://res.cloudinary.com/dlcbrqzbv/image/upload/c_scale,w_2560/8x8_LED_Matrix_Consumption_glxrli.jpg
 
 */
 
-const PAGE_TITLE = "Hardware projects photos by Frederic Torres";
+const PAGE_TITLE = "Hardware projects by Frederic Torres";
 
-function getUrl(public_id: string, format: string) {
-
-  const url = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/c_scale,w_720/${public_id}.${format}`;
-  //console.log(`getUrl ${public_id} ${format}, url ${url}`);
-  return url;
-}
+const getUrl = (public_id: string, format: string) => `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/c_scale,w_720/${public_id}.${format}`;
 
 const nusbio1Markdown = `
 ### Nusbio /1 
-The is UDB communication interface  for Windows/.NET/C# based on the FT232R chip providing an abstraction to program
+The is USB communication interface for Windows/.NET/C# based on the FT232R chip providing an abstraction to program
 * The SPI protocol
 * The I2C protocol
 * The GPIOs
@@ -66,7 +57,7 @@ const nusbio1LcdMarkdown = `
 
 const analogMarkdown = `
 ### Analog
-Different Analog projects, based on the 1970 technology.
+Different analog projects, based on the 1970 chip technology or Arduino.
 `;
 
 const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: number }) => {
@@ -91,6 +82,7 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
     }
     else if (nusbio1 && nusbio2 && analog && nusbio1Lcd) {
       images = images;
+      markdownInfos.push(nusbio1Markdown, nusbio2Markdown, nusbio1LcdMarkdown, analogMarkdown);
     }
     else {
       const images2 = images;
@@ -113,15 +105,16 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
       }
     }
   }
-  console.log(`images ${images.length}, nusbio1Lcd ${nusbio1Lcd}`);
+  console.log(`images ${images.length}`);
 
-  useEffect(() => {
-    // This effect keeps track of the last viewed photo in the modal to keep the index page in sync when the user navigates back
-    if (lastViewedPhoto && !photoId) {
-      lastViewedPhotoRef.current.scrollIntoView({ block: "center" });
-      setLastViewedPhoto(null);
-    }
-  }, [photoId, lastViewedPhoto, setLastViewedPhoto]);
+  // useEffect(() => {
+  //   // This effect keeps track of the last viewed photo in the modal to keep the index page 
+  //   // in sync when the user navigates back
+  //   if (lastViewedPhoto && !photoId) {
+  //     lastViewedPhotoRef.current.scrollIntoView({ block: "center" });
+  //     setLastViewedPhoto(null);
+  //   }
+  // }, [photoId, lastViewedPhoto, setLastViewedPhoto]);
 
   return (
     <>
@@ -130,9 +123,11 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
         <meta property="og:image" content="https://nextjsconf-pics.vercel.app/og-image.png" />
       </Head>
       <main className="mx-auto max-w-[1960px] p-4">
+
         {photoId && (
           <Modal images={images} onClose={() => { setLastViewedPhoto(photoId); }} />
         )}
+
         <div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">
           <div className="after:content relative mb-1 flex flex-col  gap-4 overflow-hidden rounded-lg bg-white/10 px-6 pb-16 pt-64 text-white shadow-highlight after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight lg:pt-0">
 
@@ -140,12 +135,14 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
               {PAGE_TITLE}
             </h1>
 
-            <div className="flex flex-col gap-2 mt-4">
+            <div className="flex flex-col mt-4">
 
               <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio1} onChange={(e) => setNusbio1(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /> <span>Nusbio1 USB Device</span></label>
               <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio2} onChange={(e) => setNusbio2(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Nusbio2 USB Device</span></label>
               <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio1Lcd} onChange={(e) => { setNusbio1Lcd(e.target.checked); }} className="rounded text-pink-500 focus:ring-0" /><span>Nusbio1 LCD</span></label>
               <label className="flex items-center gap-2"><input type="checkbox" checked={analog} onChange={(e) => setAnalog(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Analog PCBs</span></label>
+
+              <br />
 
               <div className={MarkDownClassName}>
                 {markdownInfos.map((markdown, index) => (
@@ -155,7 +152,8 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
 
             </div>
           </div>
-          {images.map(({ id, public_id, format, blurDataUrl }) => (
+
+          {(!photoId) && images.map(({ id, public_id, format, blurDataUrl }) => (
             <Link key={id} href={`/?photoId=${id}`} as={`/p/${id}`}
               onClick={() => { console.log(`onClick ${JSON.stringify(images[id])}`); }}
               ref={id === Number(lastViewedPhoto) ? lastViewedPhotoRef : null}
@@ -213,20 +211,37 @@ export async function getStaticProps() {
   for (let result of results.resources) {
 
     //console.log(`result ${result.public_id} ${JSON.stringify(result)}`);
-    reducedResults.push({ id: i, height: result.height, width: result.width, public_id: result.public_id, format: result.format, parentFolder: result.asset_folder, aspect_ratio: result.aspect_ratio });
+    try {
+      if (result.height) {
+        reducedResults.push({ id: i, height: result.height, width: result.width, public_id: result.public_id, format: result.format, parentFolder: result.asset_folder, aspect_ratio: result.aspect_ratio });
+      }
+    }
+    catch (error) {
+      console.log(`error ${error}`);
+      console.log(`result ${result.public_id} ${JSON.stringify(result)}`);
+    }
+
     i++;
   }
 
   console.log(`reducedResults ${reducedResults.length}`);
 
-  const blurImagePromises = results.resources.map((image: ImageProps) => {
+  // const blurImagePromises = results.resources.map((image: ImageProps) => {
+  //   return getBase64ImageUrl(image);
+  // });
+  // const imagesWithBlurDataUrls = await Promise.all(blurImagePromises);
+  // for (let i = 0; i < reducedResults.length; i++) {
+  //   reducedResults[i].blurDataUrl = imagesWithBlurDataUrls[i];
+  // }
+
+  // only blur the first image
+  let blurImagePromises = results.resources.map((image: ImageProps) => {
     return getBase64ImageUrl(image);
   });
-
+  blurImagePromises = blurImagePromises.splice(0, 1);
   const imagesWithBlurDataUrls = await Promise.all(blurImagePromises);
-
   for (let i = 0; i < reducedResults.length; i++) {
-    reducedResults[i].blurDataUrl = imagesWithBlurDataUrls[i];
+    reducedResults[i].blurDataUrl = imagesWithBlurDataUrls[0];
   }
 
   console.log(`*************************************`);

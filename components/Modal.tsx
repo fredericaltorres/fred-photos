@@ -25,6 +25,9 @@ export default function Modal({ images, onClose }: { images: ImageProps[]; onClo
   }
 
   function changePhotoId(newVal: number) {
+
+    console.log(`changePhotoId ${newVal}`);
+
     if (newVal > index) {
       setDirection(1);
     } else {
