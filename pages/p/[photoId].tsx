@@ -35,20 +35,18 @@ export default Home;
 
 export const getStaticProps: GetStaticProps = async (context) => {
 
+  console.log(`[getStaticProps]`);
   const results = await getResults();
   let reducedResults: ImageProps[] = [];
   let i = 0;
   for (let result of results.resources) {
-    console.log(`[photoId]i ${i}`);
+    console.log(`[getStaticProps.photoId]i ${i}`);
     if (result.height) { // bad image
       reducedResults.push({ id: i, height: result.height, width: result.width, public_id: result.public_id, format: result.format });
     }
     i++;
   }
-
-  const currentPhoto = reducedResults.find(
-    (img) => img.id === Number(context.params.photoId),
-  );
+  const currentPhoto = reducedResults.find((img) => img.id === Number(context.params.photoId));
   currentPhoto.blurDataUrl = await getBase64ImageUrl(currentPhoto);
 
   return { props: { currentPhoto: currentPhoto } };
@@ -56,6 +54,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 export async function getStaticPaths() {
 
+  console.log(`[getStaticPaths]`);
   const results = await cloudinary.v2.search
     .expression(`folder:${process.env.CLOUDINARY_FOLDER}/*`)
     .sort_by("public_id", "desc")
@@ -64,7 +63,7 @@ export async function getStaticPaths() {
 
   let fullPaths = [];
   for (let i = 0; i < results.resources.length; i++) {
-    console.log(`[photoId-2]i ${i}`);
+    console.log(`[getStaticPaths.photoId-2]i ${i}`);
     fullPaths.push({ params: { photoId: i.toString() } });
   }
 
