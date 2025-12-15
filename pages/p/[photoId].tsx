@@ -45,7 +45,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let reducedResults: ImageProps[] = [];
   let i = 0;
   for (let result of results.resources) {
-    console.log(`[[photoId].tsx]getStaticProps.photoId]i ${i}`);
     if (result.height && result.public_id) { // bad image
       reducedResults.push({ id: i, height: result.height, width: result.width, public_id: result.public_id, format: result.format });
     }
