@@ -230,10 +230,8 @@ export async function getStaticProps() {
   let reducedResults: ImageProps[] = [];
   let i = 0;
   for (let result of results.resources) {
-
-    //console.log(`result ${result.public_id} ${JSON.stringify(result)}`);
     try {
-      if (result.height) {
+      if (result.height && i != 79) {
         reducedResults.push({ id: i, height: result.height, width: result.width, public_id: result.public_id, format: result.format, parentFolder: result.asset_folder, aspect_ratio: result.aspect_ratio });
       }
     }
@@ -241,7 +239,6 @@ export async function getStaticProps() {
       console.log(`error ${error}`);
       console.log(`result ${result.public_id} ${JSON.stringify(result)}`);
     }
-
     i++;
   }
 
