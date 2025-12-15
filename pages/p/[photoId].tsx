@@ -13,6 +13,11 @@ const Home: NextPage = ({ currentPhoto }: { currentPhoto: ImageProps }) => {
   const { photoId } = router.query;
   let index = Number(photoId);
 
+  if (!currentPhoto) {
+    console.error(`[photoId]currentPhoto is not defined`);
+    return <div>Photo not found</div>;
+  }
+
   const currentPhotoUrl = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/c_scale,w_2560/${currentPhoto.public_id}.${currentPhoto.format}`;
 
   console.log(`currentPhotoUrl ${currentPhotoUrl}`);
@@ -41,7 +46,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let i = 0;
   for (let result of results.resources) {
     console.log(`[getStaticProps.photoId]i ${i}`);
-    if (result.height) { // bad image
+    if (result.height && result.public_id) { // bad image
       reducedResults.push({ id: i, height: result.height, width: result.width, public_id: result.public_id, format: result.format });
     }
     i++;
