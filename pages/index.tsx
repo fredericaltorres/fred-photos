@@ -212,12 +212,17 @@ export async function getStaticProps() {
   console.log(`__counter ${__counter}`);
   console.log(`process.env.CLOUDINARY_FOLDER ${process.env.CLOUDINARY_FOLDER} `);
   console.log(`process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME} `);
+  console.log(`process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY ${process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY} `);
 
   const results = await cloudinary.v2.search
     .expression(`folder:${process.env.CLOUDINARY_FOLDER}/*`)
     .sort_by("public_id", "desc")
     .max_results(400)
     .execute();
+
+  if (results.resources.length == 0) {
+    console.error(`No results found for folder ${process.env.CLOUDINARY_FOLDER}`);
+  }
 
   console.log(`results ${results.resources.length}`);
 
