@@ -14,6 +14,7 @@ import { useLastViewedPhoto } from "../utils/useLastViewedPhoto";
 import Markdown from "react-markdown";
 const MarkDownClassName = "prose max-w-none prose-p:text-sm prose-p:leading-relaxed prose-p:font-normal  prose-p:text-white prose-ul:text-white prose-ol:text-white  prose-h1:text-white prose-h2:text-white prose-h3:text-white prose-h4:text-white prose-h5:text-white prose-h6:text-white prose-p:mt-2 prose-p:mb-2 prose-p:ml-2 prose-p:mr-2 ";
 
+
 /*
 
   https://vercel.com/blog/building-a-fast-animated-image-gallery-with-next-js
