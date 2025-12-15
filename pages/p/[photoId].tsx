@@ -38,7 +38,7 @@ const Home: NextPage = ({ currentPhoto }: { currentPhoto: ImageProps }) => {
 
 export default Home;
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const __getStaticProps: GetStaticProps = async (context) => {
 
   console.log(`[[photoId].tsx]getStaticProps]START`);
   const results = await getResults();
@@ -60,7 +60,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return { props: { currentPhoto: currentPhoto } };
 };
 
-export async function getStaticPaths() {
+export async function __getStaticPaths() {
 
   console.log(`[[photoId].tsx]getStaticPaths]START`);
   const results = await cloudinary.v2.search
