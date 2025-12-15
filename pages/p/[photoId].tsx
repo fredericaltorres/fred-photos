@@ -42,6 +42,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   console.log(`[[photoId].tsx]getStaticProps]START`);
   const results = await getResults();
+  console.log(`[[photoId].tsx]getStaticProps]results ${results.resources.length}`);
+
   let reducedResults: ImageProps[] = [];
   let i = 0;
   for (let result of results.resources) {
