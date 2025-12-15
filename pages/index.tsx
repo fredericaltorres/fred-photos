@@ -149,24 +149,31 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
               {PAGE_TITLE}
             </h1>
 
-            <div className="flex flex-col mt-4">
 
-              <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio1} onChange={(e) => setNusbio1(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /> <span>Nusbio1 USB Device</span></label>
-              <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio2} onChange={(e) => setNusbio2(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Nusbio2 USB Device</span></label>
-              <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio1Lcd} onChange={(e) => { setNusbio1Lcd(e.target.checked); }} className="rounded text-pink-500 focus:ring-0" /><span>Nusbio1 LCD</span></label>
-              <label className="flex items-center gap-2"><input type="checkbox" checked={analog} onChange={(e) => setAnalog(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Analog PCBs</span></label>
-              <label className="flex items-center gap-2"><input type="checkbox" checked={arduino} onChange={(e) => setArduino(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Arduino and MCUs</span></label>
-              <br />
-              <div className={MarkDownClassName}>
-                {markdownInfos.map((markdown, index) => (
-                  <Markdown key={index} >{markdown}</Markdown>
-                ))}
+            {(!photoId) && (
+
+              <div className="flex flex-col mt-4">
+                <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio1} onChange={(e) => setNusbio1(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /> <span>Nusbio1 USB Device</span></label>
+                <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio2} onChange={(e) => setNusbio2(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Nusbio2 USB Device</span></label>
+                <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio1Lcd} onChange={(e) => { setNusbio1Lcd(e.target.checked); }} className="rounded text-pink-500 focus:ring-0" /><span>Nusbio1 LCD</span></label>
+                <label className="flex items-center gap-2"><input type="checkbox" checked={analog} onChange={(e) => setAnalog(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Analog PCBs</span></label>
+                <label className="flex items-center gap-2"><input type="checkbox" checked={arduino} onChange={(e) => setArduino(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Arduino and MCUs</span></label>
+                <br />
+                <div className={MarkDownClassName}>
+                  {markdownInfos.map((markdown, index) => (
+                    <Markdown key={index} >{markdown}</Markdown>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+
+
           </div>
 
           {(!photoId) && images.map(({ id, public_id, format, blurDataUrl }) => (
-            <Link key={id} href={`/?photoId=${id}`} as={`/p/${id}`}
+            <Link key={id}
+              href={`/?photoId=${id}`}
+              as={`/p/${id}`}
               onClick={() => { console.log(`onClick ${JSON.stringify(images[id])}`); }}
               ref={id === Number(lastViewedPhoto) ? lastViewedPhotoRef : null}
               shallow className="after:content group relative mb-5 block w-full cursor-zoom-in after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight"
@@ -175,6 +182,7 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
                 className="transform rounded-lg brightness-90 transition will-change-auto group-hover:brightness-110"
                 style={{ transform: "translate3d(0, 0, 0)" }}
                 placeholder="blur" blurDataURL={blurDataUrl}
+
                 src={getUrl(public_id, format)}
                 width={720} height={480}
                 sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, (max-width: 1536px) 33vw, 25vw"
@@ -239,13 +247,17 @@ export async function getStaticProps() {
   //   reducedResults[i].blurDataUrl = imagesWithBlurDataUrls[i];
   // }
 
-  // only blur the first image
-  let blurImagePromises = results.resources.map((image: ImageProps) => { return getBase64ImageUrl(image); });
-  blurImagePromises = blurImagePromises.splice(0, 1);
-  const imagesWithBlurDataUrls = await Promise.all(blurImagePromises);
-  for (let i = 0; i < reducedResults.length; i++) {
+  const dataimage = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAoHBwgHBgoICAgLCgoLDhgQDg0NDh0VFhEYIx8lJCIfIiEmKzcvJik0KSEiMEExNDk7Pj4+JS5ESUM8SDc9Pjv/2wBDAQoLCw4NDhwQEBw7KCIoOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozv/wAARCAALAAgDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAQF/8QAIhAAAgEDAwUBAAAAAAAAAAAAAQIDAAUhBAYREhMiMTJR/8QAFQEBAQAAAAAAAAAAAAAAAAAAAQP/xAAXEQADAQAAAAAAAAAAAAAAAAAAAQIR/9oADAMBAAIRAxEAPwC633m5pubUabUSSS29piiydolVY/IBHoZAzilbG1+JbfLKyr1vJ5FVC84H5SpKmKnD/9k=';
 
-    reducedResults[i].blurDataUrl = imagesWithBlurDataUrls[0];
+  // Do not really compute blurDataUrl
+  const results_resources_0 = [results.resources[0]];
+  let blurImagePromises = results_resources_0.map((image: ImageProps) => { return getBase64ImageUrl(image); });
+  console.log(`[index.tsx]getStaticProps() blurImagePromises ${blurImagePromises.length}`);
+  //const imagesWithBlurDataUrls = await Promise.all(blurImagePromises);
+  console.log(`[index.tsx]getStaticProps() blurImagePromises ${blurImagePromises.length} -- DONE`);
+  for (let i = 0; i < reducedResults.length; i++) {
+    // reducedResults[i].blurDataUrl = imagesWithBlurDataUrls[0];
+    reducedResults[i].blurDataUrl = dataimage;
   }
 
   console.log(`[index.tsx]getStaticProps() END`);
