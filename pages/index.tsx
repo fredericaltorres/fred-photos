@@ -202,11 +202,11 @@ let __reducedResults: ImageProps[] = [];
 export async function getStaticProps() {
 
   if (__reducedResults.length > 0) {
-    console.log(`\r\n*** getStaticProps **** OPTIMIZED **** `);
+    console.log(`\r\n*** [index.tsx]getStaticProps **** OPTIMIZED **** `);
     return { props: { images: __reducedResults } };
   }
 
-  console.log(`\r\n*** getStaticProps ********************************** `);
+  console.log(`\r\n*** [index.tsx]getStaticProps ********************************** `);
   console.log(`Machine Name: ${require("os").hostname()}`);
   __counter++;
   console.log(`__counter ${__counter}`);
@@ -243,7 +243,7 @@ export async function getStaticProps() {
     i++;
   }
 
-  console.log(`reducedResults ${reducedResults.length}`);
+  console.log(`[index.tsx]getStaticProps.reducedResults ${reducedResults.length}`);
 
   // const blurImagePromises = results.resources.map((image: ImageProps) => {
   //   return getBase64ImageUrl(image);

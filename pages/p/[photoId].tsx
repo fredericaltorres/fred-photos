@@ -40,12 +40,12 @@ export default Home;
 
 export const getStaticProps: GetStaticProps = async (context) => {
 
-  console.log(`[getStaticProps]`);
+  console.log(`[[photoId].tsx]getStaticProps]`);
   const results = await getResults();
   let reducedResults: ImageProps[] = [];
   let i = 0;
   for (let result of results.resources) {
-    console.log(`[getStaticProps.photoId]i ${i}`);
+    console.log(`[[photoId].tsx]getStaticProps.photoId]i ${i}`);
     if (result.height && result.public_id) { // bad image
       reducedResults.push({ id: i, height: result.height, width: result.width, public_id: result.public_id, format: result.format });
     }
@@ -59,7 +59,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 export async function getStaticPaths() {
 
-  console.log(`[getStaticPaths]`);
+  console.log(`[[photoId].tsx]getStaticPaths]`);
   const results = await cloudinary.v2.search
     .expression(`folder:${process.env.CLOUDINARY_FOLDER}/*`)
     .sort_by("public_id", "desc")
@@ -68,7 +68,7 @@ export async function getStaticPaths() {
 
   let fullPaths = [];
   for (let i = 0; i < results.resources.length; i++) {
-    console.log(`[getStaticPaths.photoId-2]i ${i}`);
+    console.log(`[[[photoId].tsx]getStaticPaths].photoId-2]i ${i}`);
     fullPaths.push({ params: { photoId: i.toString() } });
   }
 
