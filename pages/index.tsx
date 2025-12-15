@@ -212,7 +212,8 @@ export async function getStaticProps() {
   console.log(`__counter ${__counter}`);
   console.log(`process.env.CLOUDINARY_FOLDER ${process.env.CLOUDINARY_FOLDER} `);
   console.log(`process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME} `);
-  console.log(`process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY ${process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY} `);
+  console.log(`process.env.CLOUDINARY_API_KEY ${process.env.CLOUDINARY_API_KEY} `);
+  console.log(`process.env.CLOUDINARY_API_SECRET ${process.env.CLOUDINARY_API_SECRET} `);
 
   const results = await cloudinary.v2.search
     .expression(`folder:${process.env.CLOUDINARY_FOLDER}/*`)
