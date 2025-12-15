@@ -230,7 +230,7 @@ export async function getStaticProps() {
   let reducedResults: ImageProps[] = [];
   let i = 0;
   for (let result of results.resources) {
-    console.log(`i ${i}`);
+    console.log(`[index.tsx]getStaticProps i ${i}`);
     try {
       if (result.height) { // bad image
         reducedResults.push({ id: i, height: result.height, width: result.width, public_id: result.public_id, format: result.format, parentFolder: result.asset_folder, aspect_ratio: result.aspect_ratio });
@@ -260,7 +260,7 @@ export async function getStaticProps() {
   blurImagePromises = blurImagePromises.splice(0, 1);
   const imagesWithBlurDataUrls = await Promise.all(blurImagePromises);
   for (let i = 0; i < reducedResults.length; i++) {
-    console.log(`i ${i}`);
+    console.log(`[index.tsx]getStaticProps i ${i}`);
     reducedResults[i].blurDataUrl = imagesWithBlurDataUrls[0];
   }
 
