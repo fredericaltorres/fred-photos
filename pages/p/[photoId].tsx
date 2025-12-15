@@ -39,13 +39,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let reducedResults: ImageProps[] = [];
   let i = 0;
   for (let result of results.resources) {
-    reducedResults.push({
-      id: i,
-      height: result.height,
-      width: result.width,
-      public_id: result.public_id,
-      format: result.format,
-    });
+    if (result.height) { // bad image
+      reducedResults.push({ id: i, height: result.height, width: result.width, public_id: result.public_id, format: result.format });
+    }
     i++;
   }
 
@@ -54,11 +50,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   );
   currentPhoto.blurDataUrl = await getBase64ImageUrl(currentPhoto);
 
-  return {
-    props: {
-      currentPhoto: currentPhoto,
-    },
-  };
+  return { props: { currentPhoto: currentPhoto } };
 };
 
 export async function getStaticPaths() {
