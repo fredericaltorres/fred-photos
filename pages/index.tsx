@@ -60,6 +60,13 @@ const analogMarkdown = `
 Different analog projects, based on the 1970 chip technology or Arduino.
 `;
 
+const arduinoMarkdown = `
+### Arduino and other MCUs
+- Arduino / ATmega328P MCU
+- ESP32 MCU
+- RP2040 MCU
+`;
+
 const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: number }) => {
 
   console.log(`counter ${counter}`);
@@ -71,16 +78,17 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
   const [nusbio2, setNusbio2] = useState(false);
   const [nusbio1Lcd, setNusbio1Lcd] = useState(false);
   const [analog, setAnalog] = useState(false);
+  const [arduino, setArduino] = useState(false);
   const markdownInfos = [];
 
   if (photoId) {
     console.log(`photoId ${photoId} DETECTED`);
   }
   else {
-    if (!nusbio1 && !nusbio2 && !analog && !nusbio1Lcd) {
+    if (!nusbio1 && !nusbio2 && !analog && !nusbio1Lcd && !arduino) {
       images = [];
     }
-    else if (nusbio1 && nusbio2 && analog && nusbio1Lcd) {
+    else if (nusbio1 && nusbio2 && analog && nusbio1Lcd && arduino) {
       images = images;
       markdownInfos.push(nusbio1Markdown, nusbio2Markdown, nusbio1LcdMarkdown, analogMarkdown);
     }
@@ -102,6 +110,10 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
       if (analog) {
         images.push(...images2.filter((image) => image.parentFolder.includes("/analog")));
         markdownInfos.push(analogMarkdown);
+      }
+      if (arduino) {
+        images.push(...images2.filter((image) => image.parentFolder.includes("/arduino")));
+        markdownInfos.push(arduinoMarkdown);
       }
     }
   }
@@ -141,6 +153,7 @@ const Home: NextPage = ({ images, counter }: { images: ImageProps[], counter: nu
               <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio2} onChange={(e) => setNusbio2(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Nusbio2 USB Device</span></label>
               <label className="flex items-center gap-2"><input type="checkbox" checked={nusbio1Lcd} onChange={(e) => { setNusbio1Lcd(e.target.checked); }} className="rounded text-pink-500 focus:ring-0" /><span>Nusbio1 LCD</span></label>
               <label className="flex items-center gap-2"><input type="checkbox" checked={analog} onChange={(e) => setAnalog(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Analog PCBs</span></label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={arduino} onChange={(e) => setArduino(e.target.checked)} className="rounded text-pink-500 focus:ring-0" /><span>Arduino and MCUs</span></label>
 
               <br />
 
